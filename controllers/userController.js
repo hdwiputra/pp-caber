@@ -58,7 +58,10 @@ class UserController {
             res.redirect('/login');
 
         } catch (error) {
-            // Kalau error selain validasi
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                error = error.errors.map(el => el.message);
+                res.redirect(`/register?error=${error}`)
+            }
             res.send(error);
         }
     }
@@ -98,6 +101,12 @@ class UserController {
                 error = error.errors.map(el => el.message);
                 res.redirect(`/login?error=${error}`)
             }
+
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                error = error.errors.map(el => el.message);
+                res.redirect(`/login?error=${error}`)
+            }
+
             res.send(error);
         }
     }

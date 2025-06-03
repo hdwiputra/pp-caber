@@ -20,6 +20,7 @@
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
           notNull: {
             msg: 'Email is needed to register!'
@@ -42,30 +43,32 @@
           notEmpty: {
             msg: 'Password is needed to register!'
           },
-          passRequirement(value) {
-            const errors = [];
-            const minLength = 5;
-
-            if (value.length) {
-              if (value.length < minLength) {
-                errors.push('Password must be at least 5 characters long.');
-              }
-              if (!/[A-Z]/.test(value)) {
-                errors.push('Password must include an uppercase letter.');
-              }
-              if (!/[a-z]/.test(value)) {
-                errors.push('Password must include a lowercase letter.');
-              }
-              if (!/[^A-Za-z0-9]/.test(value)) {
-                errors.push('Password must include a symbol.');
-              }
-            }
-
-            if (errors.length) {
-              throw new Error(errors.join(','));
-            }
+          is: {
+            args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{5,}$/,
+            msg: 'Password must be at least 5 characters, Password must include uppercase, Password must include lowercase, Password must include a number, Password must include a symbol.'
           }
+          // passRequirement(value) {
+          //   const errors = [];
+          //   const minLength = 5;
 
+          //   if (value.length) {
+          //     if (value.length < minLength) {
+          //       errors.push('Password must be at least 5 characters long.');
+          //     }
+          //     if (!/[A-Z]/.test(value)) {
+          //       errors.push('Password must include an uppercase letter.');
+          //     }
+          //     if (!/[a-z]/.test(value)) {
+          //       errors.push('Password must include a lowercase letter.');
+          //     }
+          //     if (!/[^A-Za-z0-9]/.test(value)) {
+          //       errors.push('Password must include a symbol.');
+          //     }
+          //   }
+          //   if (errors.length) {
+          //     throw new Error(errors.join(','));
+          //   }
+          // }
         }
       },
       role: {
