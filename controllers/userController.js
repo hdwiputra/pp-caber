@@ -14,7 +14,6 @@ class UserController {
         try {
             const { email, username, password } = req.body;
 
-            // Build instance model tanpa simpan dulu
             const user = User.build({
                 email,
                 password,
@@ -24,19 +23,16 @@ class UserController {
             const account = Account.build({
                 username,
                 imageUrl: 'https://i.pinimg.com/474x/47/ba/71/47ba71f457434319819ac4a7cbd9988e.jpg'
-                // UserId nanti diisi setelah user disimpan
             });
 
             let errors = [];
 
-            // Validasi User
             try {
                 await user.validate();
             } catch (err) {
                 errors.push(...err.errors.map(e => e.message));
             }
 
-            // Validasi Account
             try {
                 await account.validate();
             } catch (err) {
@@ -44,7 +40,6 @@ class UserController {
             }
 
             if (errors.length > 0) {
-                // Gabungkan error jadi string yang mudah dikirim via query string
                 return res.redirect(`/register?error=${encodeURIComponent(errors.join(','))}`);
             }
 
