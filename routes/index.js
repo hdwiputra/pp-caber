@@ -36,5 +36,7 @@ router.use(idCheck);
 
 router.get('/logout', UserController.getLogOut)
 router.get('/home', Controller.home);
+router.get('/member/edit/:id', UserController.getEditMember)
+router.post('/member/edit/:id', UserController.postEditMember)
 
 module.exports = router;

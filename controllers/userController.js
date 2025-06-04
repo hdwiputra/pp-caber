@@ -119,6 +119,32 @@ class UserController {
         }
     }
 
+    static async getEditMember(req, res) {
+        try {
+            const {id} = req.params;
+            let data = await Account.findOne({
+                where:{
+                    id: id
+                }
+            })
+            res.render('editMember', {data});
+        } catch (error) {
+            res.send(error);
+        }
+    }
+    static async postEditMember(req, res) {
+        try {
+            const {id} = req.params;
+            const { username, imageUrl } = req.body;
+            await Account.update(
+                { username, imageUrl },
+                { where: { id: id } }
+            );
+            res.redirect('/home');
+        } catch (error) {
+            res.status(500).send(error);
+        }
+    }
     static async(req, res) {
         try {
 
