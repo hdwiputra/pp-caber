@@ -4,7 +4,7 @@ const { Account, User } = require('../models');
 class UserController {
     static async getRegister(req, res) {
         try {
-            const { error } = req.query;
+            let { error } = req.query;
             res.render('register', { error });
         } catch (error) {
             res.send(error);
@@ -12,15 +12,15 @@ class UserController {
     }
     static async postRegister(req, res) {
         try {
-            const { email, username, password } = req.body;
+            let { email, username, password } = req.body;
 
-            const user = User.build({
+            let user = User.build({
                 email,
                 password,
                 role: 'User'
             });
 
-            const account = Account.build({
+            let account = Account.build({
                 username,
                 imageUrl: 'placeholder.jpg'
             });
@@ -40,12 +40,12 @@ class UserController {
             }
 
             if (errors.length > 0) {
-                return res.redirect(`/register?error=${encodeURIComponent(errors.join(','))}`);
+                return res.redirect(`/register?error=${(errors.join(','))}`);
             }
 
             // Kalau validasi oke, baru simpan dengan transaction supaya konsisten
             await User.sequelize.transaction(async (t) => {
-                const savedUser = await user.save({ transaction: t });
+                let savedUser = await user.save({ transaction: t });
                 account.UserId = savedUser.id;
                 await account.save({ transaction: t });
             });
@@ -62,7 +62,7 @@ class UserController {
     }
     static async getLogin(req, res) {
         try {
-            const { error } = req.query;
+            let { error } = req.query;
             res.render('login', { error });
         } catch (error) {
             res.send(error);
@@ -70,26 +70,37 @@ class UserController {
     }
     static async postLogin(req, res) {
         try {
-            const { username, password } = req.body;
-            let data = await User.findOne({
-                include: {
-                    model: Account,
-                    where: {
-                        username: username,
-                    },
-                    attributes: [
-                        'username'
-                    ]
-                }
-            })
+            let { username, password } = req.body;
 
-            if (!username || !data.Account.username || !bcrypt.compareSync(password, data.password)) {
-                const error = 'Username/Password is not correct!'
+            if (!username || !password) {
+                let error = 'Username and Password are required!';
                 return res.redirect(`/login?error=${error}`);
             }
 
+            let data = await User.findOne({
+                include: {
+                    model: Account,
+                    where: { username },
+                    attributes: ['username']
+                },
+                attributes: ['id', 'password', 'role']
+            });
+
+            if (!data || !data.Account) {
+                let error = 'Username/Password is not correct!';
+                return res.redirect(`/login?error=${error}`);
+            }
+
+            let checkPassword = bcrypt.compareSync(password, data.password);
+            if (!checkPassword) {
+                let error = 'Username/Password is not correct!';
+                return res.redirect(`/login?error=${(error)}`);
+            }
+
+            // Sukses login, simpan session
             req.session.userId = data.id;
             req.session.role = data.role;
+
             return res.redirect('/home');
         } catch (error) {
             if (error.name === 'SequelizeValidationError') {
@@ -97,7 +108,7 @@ class UserController {
                 res.redirect(`/login?error=${error}`)
             }
 
-            if (error.name === 'SequelizeUniqueConstraintError') {
+            if (error.name === 'SequelizeUniqueletraintError') {
                 error = error.errors.map(el => el.message);
                 res.redirect(`/login?error=${error}`)
             }
@@ -121,8 +132,8 @@ class UserController {
 
     static async getEditMember(req, res) {
         try {
-            const { id } = req.params;
-            const { error } = req.query;
+            let { id } = req.params;
+            let { error } = req.query;
             let data = await Account.findOne({
                 where: {
                     id: id
@@ -135,8 +146,8 @@ class UserController {
     }
     static async postEditMember(req, res) {
         try {
-            const { username } = req.body;
-            const file = req.file;
+            let { username } = req.body;
+            let file = req.file;
 
             await Account.update(
                 {
@@ -150,12 +161,11 @@ class UserController {
 
             res.redirect('/home');
         } catch (error) {
-            let {id} = req.params;
+            let { id } = req.params;
             if (error.name === 'SequelizeValidationError') {
                 error = error.errors.map(el => el.message);
                 res.redirect(`/member/edit/${id}?error=${error}`);
             }
-            console.log(error)
             res.send(error);
         }
     }

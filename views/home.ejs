@@ -3,67 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>CaBer - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: #333;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Column width styling for uploads table */
+        .uploads-table th:nth-child(1), /* Posted By */
+        .uploads-table td:nth-child(1) {
+            width: 15%;
+        }
+
+        .uploads-table th:nth-child(2), /* Title */
+        .uploads-table td:nth-child(2) {
+            width: 40%;
+        }
+
+        .uploads-table th:nth-child(3), /* Posted At */
+        .uploads-table td:nth-child(3) {
+            width: 20%;
+        }
+
+        .uploads-table th:nth-child(4), /* Tags */
+        .uploads-table td:nth-child(4) {
+            width: 25%;
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background-color: #f8f9ff;
+        }
+
+        .upload-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .upload-link:hover {
+            color: #764ba2;
+        }
+
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #f0f0f0;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1);
+        }
+
+        .username-link {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .username-link:hover {
+            color: #667eea;
+        }
+
+        .tag {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 2px;
+            font-weight: 500;
+        }
+
+        .date {
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .search-form {
+                flex-direction: column;
+                max-width: 100%;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+    </style>
 </head>
 <body>
-    <a href="/logout">Logout</a>
-    <h1>CaBer</h1>
-    <a href="/uploads/add">Upload Something!</a><br>
-    <% if (tittle) { %>
-     <p>Upload with the title <%= tittle %> had been deleted</p>
-    <% } %>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1 class="logo">CaBer</h1>
+            <div class="header-actions">
+                <a href="/uploads/add" class="btn btn-primary">📝 Upload Something!</a>
+                <a href="/logout" class="btn btn-secondary">🚪 Logout</a>
+            </div>
+        </div>
 
-    <form action="/home" method="get">
-        <input type="text" name="search">
-        <input type="submit" value="SEARH">
-    </form>
+        <!-- Success Message -->
+        <% if (tittle) { %>
+            <div class="alert">
+                ✅ Upload with the title "<%= tittle %>" has been deleted successfully!
+            </div>
+        <% } %>
 
-    <table border="1">
-        <tr>
-            <th>Posted By</th>
-            <th>Title</th>
-            <th>Posted at</th>
-            <th>Tags</th>
-        </tr>
-        <% uploads.forEach(el => { %>
-         <tr>
-            <td><%= el.Account.username %></td>
-            <td><a href="/uploads/<%= el.id %>"><%= el.title %></a></td>
-            <td><%= dateFormat(el.createdAt) %></td>
-            <td><% el.Tags.forEach(tag => { %>
-                <p><%= tag.tagName %></p>
-              <% }) %></td>
-         </tr>
-        <% }) %>
-    </table>
-    <br>
+        <!-- Search Section -->
+        <div class="search-section">
+            <form action="/home" method="get" class="search-form">
+                <input type="text" name="search" placeholder="Search uploads by title" class="search-input">
+                <button type="submit" class="btn btn-primary">🔍 Search</button>
+            </form>
+        </div>
 
-    <h3>Admin</h3>
-    <table border="1">
-        <tr>
-            <th>Username</th>
-            <th>Profile Picture</th>
-        </tr>
-        <% admins.forEach(el => { %>
-         <tr>
-            <td><a href="/member/edit/<%= el.Account.id %>"><%= el.Account.username %></a></td>
-            <td><img src="/uploads/<%= el.Account.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
-         </tr>
-        <% }) %>
-    </table>
+        <!-- Recent Uploads Section -->
+        <div class="section">
+            <h2 class="section-title">📚 Recent Uploads</h2>
+            <div class="table-container">
+                <% if (uploads && uploads.length > 0) { %>
+                    <table class="uploads-table">
+                        <thead>
+                            <tr>
+                                <th>👤 Posted By</th>
+                                <th>📄 Title</th>
+                                <th>📅 Posted At</th>
+                                <th>🏷️ Tags</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% uploads.forEach(el => { %>
+                                <tr>
+                                    <td>
+                                        <span class="username-link"><%= el.Account.username %></span>
+                                    </td>
+                                    <td>
+                                        <a href="/uploads/<%= el.id %>" class="upload-link"><%= el.title %></a>
+                                    </td>
+                                    <td>
+                                        <span class="date"><%= dateFormat(el.createdAt) %></span>
+                                    </td>
+                                    <td>
+                                        <% if (el.Tags && el.Tags.length > 0) { %>
+                                            <% el.Tags.forEach(tag => { %>
+                                                <span class="tag"><%= tag.tagName %></span>
+                                            <% }) %>
+                                        <% } else { %>
+                                            <span style="color: #999; font-style: italic;">No tags</span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="empty-state">
+                        📭 No uploads found. Be the first to share something!
+                    </div>
+                <% } %>
+            </div>
+        </div>
 
-    <h3>Member</h3>
-    <table border="1">
-        <tr>
-            <th>Username</th>
-            <th>Profile Picture</th>
-        </tr>
-        <% member.forEach(el => { %>
-         <tr>
-            <td><a href="/member/edit/<%= el.id %>"><%= el.username %></a></td>
-            <td><img src="/uploads/<%= el.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
-         </tr>
-        <% }) %>
-    </table>
+        <!-- Admins Section -->
+        <div class="section">
+            <h2 class="section-title">👑 Administrators</h2>
+            <div class="table-container">
+                <% if (admins && admins.length > 0) { %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>👤 Username</th>
+                                <th>🖼️ Profile Picture</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% admins.forEach(el => { %>
+                                <tr>
+                                    <td>
+                                        <a href="/member/edit/<%= el.Account.id %>" class="username-link">
+                                            <%= el.Account.username %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <img src="/uploads/<%= el.Account.imageUrl %>" 
+                                             alt="Profile picture of <%= el.Account.username %>" 
+                                             class="profile-img">
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="empty-state">
+                        👑 No administrators found.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Members Section -->
+        <div class="section">
+            <h2 class="section-title">👥 Members</h2>
+            <div class="table-container">
+                <% if (member && member.length > 0) { %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>👤 Username</th>
+                                <th>🖼️ Profile Picture</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% member.forEach(el => { %>
+                                <tr>
+                                    <td>
+                                        <a href="/member/edit/<%= el.id %>" class="username-link">
+                                            <%= el.username %>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <img src="/uploads/<%= el.imageUrl %>" 
+                                             alt="Profile picture of <%= el.username %>" 
+                                             class="profile-img">
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="empty-state">
+                        👥 No members found.
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

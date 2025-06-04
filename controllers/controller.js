@@ -85,7 +85,7 @@ class Controller {
             tags.forEach(el => {
                 uploadsTagsData.push({ UploadId: data.id, TagId: el })
             });
-            console.log(uploadsTagsData);
+            
             await UploadsTag.bulkCreate(uploadsTagsData)
 
             res.redirect('/home');
@@ -94,7 +94,6 @@ class Controller {
                 error = error.errors.map(el => el.message);
                 res.redirect(`/uploads/add?error=${error}`);
             }
-            console.log(error)
             res.send(error);
         }
     }
@@ -156,7 +155,6 @@ class Controller {
                 uploadsTagsData.push({ UploadId: id, TagId: el })
             });
 
-            console.log(uploadsTagsData);
             await UploadsTag.bulkCreate(uploadsTagsData)
 
             res.redirect(`/uploads/${id}`);
@@ -166,7 +164,6 @@ class Controller {
                 error = error.errors.map(el => el.message);
                 res.redirect(`/uploads/${id}/edit/?error=${error}`);
             }
-            console.log(error)
             res.send(error);
         }
     }
