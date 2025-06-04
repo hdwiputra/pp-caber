@@ -4,13 +4,14 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Upload extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       // define association here
+      Upload.belongsTo(models.Account, { foreignKey: 'AccountId' });
+      Upload.belongsToMany(models.Tag, { through: models.UploadsTag })
+    }
+
+    get formattedContent() {
+      return this.content?.replace(/\n/g, '<br>') || '';
     }
   }
   Upload.init({
@@ -39,17 +40,17 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     imageUrl: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       validate: {
         isUrl: {
           msg: 'Image URL should be in URL format'
         }
       }
     },
-    code: {
-      type: DataTypes.STRING
-    },
     AccountId: {
+      type: DataTypes.INTEGER
+    },
+    code:{
       type: DataTypes.STRING
     }
   }, {

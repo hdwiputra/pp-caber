@@ -2,26 +2,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Uploads', {
+    await queryInterface.createTable('UploadsTags', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      title: {
-        type: Sequelize.STRING
-      },
-      content: {
-        type: Sequelize.STRING
-      },
-      imageUrl: {
-        type: Sequelize.STRING
-      },
-      AccountId: {
+      UploadId: {
         type: Sequelize.INTEGER,
         references:{
-          model: 'Users',
+          model: 'Uploads',
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      },
+      TagId: {
+        type: Sequelize.INTEGER,
+        references:{
+          model: 'Tags',
           key: 'id'
         },
         onDelete: 'CASCADE',
@@ -38,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Uploads');
+    await queryInterface.dropTable('UploadsTags');
   }
 };

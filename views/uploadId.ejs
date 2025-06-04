@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload</title>
+</head>
+<body>
+    <%= JSON.stringify(data) %>
+    <h1><%= data.title %></h1>
+    <p>Post ID : <%= data.id %></p>
+    <p>Code : <%= data.code %></p>
+    <img src="<%= data.imageUrl %>" alt="" style="height: 100px;">
+    <p><%- data.formattedContent %></p>
+
+    Tags: 
+    <% data.Tags.forEach(el => { %>
+     <%= el.tagName %>, 
+    <% }) %>
+
+    <br><br>
+    <a href="/uploads/<%= data.id %>/edit">Edit Upload</a><br>
+    <a href="/uploads/<%= data.id %>/delete">Delete</a>
+</body>
+</html>

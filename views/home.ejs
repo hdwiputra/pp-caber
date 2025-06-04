@@ -6,14 +6,33 @@
     <title>Home</title>
 </head>
 <body>
-    <h1>CaBer</h1>
+    <%= JSON.stringify(uploads) %>
     <a href="/logout">Logout</a>
+    <h1>CaBer</h1>
+    <a href="/uploads/add">Upload Something!</a><br>
+
+    <table border="1">
+        <tr>
+            <th>Posted By</th>
+            <th>Title</th>
+            <th>Posted at</th>
+        </tr>
+        <% uploads.forEach(el => { %>
+         <tr>
+            <td><%= el.Account.username %></td>
+            <td><a href="/uploads/<%= el.id %>"><%= el.title %></a></td>
+            <td><%= dateFormat(el.createdAt) %></td>
+         </tr>
+        <% }) %>
+    </table>
+    <br>
+
     <table border="1">
         <tr>
             <th>Username</th>
             <th>Profile Picture</th>
         </tr>
-        <% data.forEach(el => { %>
+        <% member.forEach(el => { %>
          <tr>
             <td><a href="/member/edit/<%= el.id %>"><%= el.username %></a></td>
             <td><img src="<%= el.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>

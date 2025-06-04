@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Upload</title>
+</head>
+
+<body>
+    <%= JSON.stringify(upload) %>
+        <h1>Edit Upload!</h1>
+
+        <form action="/uploads/<%= upload.id %>/edit/" method="post">
+            <label>Title</label><br>
+            <input type="text" name="title" value="<%= upload.title %>"><br><br>
+
+            <label>Content</label><br>
+            <textarea name="content"><%= upload.content %></textarea><br><br>
+
+            <label>Image</label><br>
+            <input type="text" name="imageUrl" value="<%= upload.imageUrl %>"><br><br>
+
+            <label>Tags</label><br>
+            <% data.forEach(el => { %>
+                <input type="checkbox" name="tags" value="<%= el.id %>" 
+                    <%= upload.Tags.some(tag => tag.id === el.id) ? 'checked' : '' %>>
+                <%= el.tagName %><br>
+            <% }) %>
+
+            
+            <input type="submit" value="Edit Upload">
+
+        </form>
+</body>
+
+</html>

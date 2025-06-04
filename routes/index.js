@@ -9,7 +9,7 @@ const idCheck = (req, res, next) => {
     
     if (!req.session.userId) {
         const error = 'Please Login First!';
-        return res.redirect(`./login?error=${error}`);
+        return res.redirect(`/login?error=${error}`);
     }
 
     next();
@@ -20,7 +20,7 @@ const roleCheck = (req, res, next) => {
     
     if (!req.session.role) {
         const error = 'Please Login First!';
-        return res.redirect(`./login?error=${error}`);
+        return res.redirect(`/login?error=${error}`);
     }
 
     next();
@@ -32,11 +32,18 @@ router.post('/register', UserController.postRegister);
 router.get('/login', UserController.getLogin);
 router.post('/login', UserController.postLogin);
 
-router.use(idCheck);
+// router.use(idCheck);
 
 router.get('/logout', UserController.getLogOut)
 router.get('/home', Controller.home);
-router.get('/member/edit/:id', UserController.getEditMember)
-router.post('/member/edit/:id', UserController.postEditMember)
+router.get('/member/edit/:id', UserController.getEditMember);
+router.post('/member/edit/:id', UserController.postEditMember);
+
+router.get('/uploads/add', Controller.getAddUpload);
+router.post('/uploads/add', Controller.postAddUpload);
+router.get('/uploads/:id', Controller.uploadId);
+router.get('/uploads/:id/edit', Controller.getEditUpload);
+router.post('/uploads/:id/edit', Controller.postEditUpload);
+router.get('/uploads/:id/delete', Controller.getDeleteUpload);
 
 module.exports = router;

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Account.belongsTo(models.User, { foreignKey: 'UserId' })
+      Account.hasMany(models.Upload, { foreignKey: 'AccountId' })
     }
   }
   Account.init({

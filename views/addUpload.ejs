@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Upload</title>
+</head>
+
+<body>
+    <%= JSON.stringify(data) %>
+        <h1>New Upload!</h1>
+
+        <form action="/uploads/add" method="post">
+            <label>Title</label><br>
+            <input type="text" name="title"><br><br>
+
+            <label>Content</label><br>
+            <textarea name="content"></textarea><br><br>
+
+            <label>Image</label><br>
+            <input type="text" name="imageUrl"><br><br>
+
+            <label>Tags</label><br>
+            <% data.forEach(el => { %>
+                <input type="checkbox" name="tags" value="<%= el.id %>">
+                <%= el.tagName %><br>
+            <% }) %>
+            <br>
+
+            
+            <input type="submit" value="Add Upload">
+
+        </form>
+</body>
+
+</html>
