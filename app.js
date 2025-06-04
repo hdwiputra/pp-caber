@@ -6,6 +6,7 @@ const session = require('express-session');
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
+app.use('/uploads', express.static('uploads'));
 app.use(session({
   secret: 'highlySecret',
   resave: false,
@@ -15,6 +16,7 @@ app.use(session({
     sameSite: true
   }
 }))
+
 app.use('/', router);
 
 app.listen(port, () => {

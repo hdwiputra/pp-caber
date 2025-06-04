@@ -75,7 +75,7 @@ class UserController {
                 include: {
                     model: Account,
                     where: {
-                        username: username
+                        username: username,
                     },
                     attributes: [
                         'username'
@@ -121,28 +121,36 @@ class UserController {
 
     static async getEditMember(req, res) {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             let data = await Account.findOne({
-                where:{
+                where: {
                     id: id
                 }
             })
-            res.render('editMember', {data});
+            res.render('editMember', { data });
         } catch (error) {
             res.send(error);
         }
     }
     static async postEditMember(req, res) {
         try {
-            const {id} = req.params;
-            const { username, imageUrl } = req.body;
+            const { username } = req.body;
+            const file = req.file;
+
             await Account.update(
-                { username, imageUrl },
-                { where: { id: id } }
+                {
+                    username,
+                    imageUrl: file ? file.filename : undefined
+                },
+                {
+                    where: { id: req.params.id }
+                }
             );
+
             res.redirect('/home');
         } catch (error) {
-            res.status(500).send(error);
+            console.log(error)
+            res.send(error);
         }
     }
     static async(req, res) {

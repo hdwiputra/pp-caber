@@ -9,14 +9,14 @@
     <%= JSON.stringify(data) %>
     <h1>Edit Member</h1>
 
-    <form method="post" action="/member/edit/<%= data.id %>">
+    <form method="post" action="/member/edit/<%= data.id %>" enctype="multipart/form-data">
         <label>Username</label><br>
         <input type="text" name="username" value="<%= data.username %>"><br><br>
-
+    
         <label>Image</label><br>
-        <input type="text" name="imageUrl" value="<%= data.imageUrl %>"><br><br>
-
-        <input type="submit" value="Register">
+        <input type="file" name="imageUrl"><br><br>
+    
+        <input type="submit" value="Update">
     </form>
 </body>
 </html>

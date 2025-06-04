@@ -18,7 +18,7 @@
 
         <h1>New Upload!</h1>
 
-        <form action="/uploads/add" method="post">
+        <form action="/uploads/add" method="post" enctype="multipart/form-data">
             <label>Title</label><br>
             <input type="text" name="title"><br><br>
 
@@ -26,7 +26,7 @@
             <textarea name="content"></textarea><br><br>
 
             <label>Image</label><br>
-            <input type="text" name="imageUrl"><br><br>
+            <input type="file" name="imageUrl"><br><br>
 
             <label>Tags</label><br>
             <% data.forEach(el => { %>

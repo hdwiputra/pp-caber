@@ -6,7 +6,7 @@
     <title>Home</title>
 </head>
 <body>
-    <%= JSON.stringify(admins) %>
+    <%= JSON.stringify(member) %>
     <a href="/logout">Logout</a>
     <h1>CaBer</h1>
     <a href="/uploads/add">Upload Something!</a><br>
@@ -48,7 +48,7 @@
         <% admins.forEach(el => { %>
          <tr>
             <td><a href="/member/edit/<%= el.Account.id %>"><%= el.Account.username %></a></td>
-            <td><img src="<%= el.Account.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
+            <td><img src="/uploads/<%= el.Account.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
          </tr>
         <% }) %>
     </table>
@@ -62,7 +62,7 @@
         <% member.forEach(el => { %>
          <tr>
             <td><a href="/member/edit/<%= el.id %>"><%= el.username %></a></td>
-            <td><img src="<%= el.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
+            <td><img src="/uploads/<%= el.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
          </tr>
         <% }) %>
     </table>

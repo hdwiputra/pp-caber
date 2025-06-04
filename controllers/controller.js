@@ -65,14 +65,8 @@ class Controller {
     }
     static async postAddUpload(req, res) {
         try {
-            let { title, content, imageUrl, tags } = req.body
-
-            console.log(req.body);
-            console.log(tags);
-
-            if (imageUrl === '') {
-                imageUrl = null;
-            }
+            let { title, content, tags } = req.body
+            let file = req.file;
 
             if (!tags) {
                 tags = [1]
@@ -83,7 +77,7 @@ class Controller {
             let data = await Upload.create({
                 title,
                 content,
-                imageUrl,
+                imageUrl: file ? file.filename : undefined,
                 AccountId: req.session.userId
             })
 
@@ -136,13 +130,10 @@ class Controller {
     static async postEditUpload(req, res) {
         try {
             let { id } = req.params;
-            let { title, content, imageUrl, tags } = req.body;
+            let { title, content, tags } = req.body;
+            let file = req.file;
 
             console.log(req.body)
-
-            if (imageUrl === '') {
-                imageUrl = null;
-            }
 
             if (!tags) {
                 tags = [1]
@@ -151,7 +142,11 @@ class Controller {
             }
 
             await Upload.update(
-                { title, content, imageUrl },
+                {
+                    title,
+                    content,
+                    imageUrl: file ? file.filename : undefined
+                },
                 { where: { id } }
             );
 
