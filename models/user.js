@@ -15,6 +15,13 @@
         // define association here
         User.hasOne(models.Account, { foreignKey: 'UserId' })
       }
+
+      static async findAdmins() {
+        return await this.findAll({
+          where: { role: 'Admin' },
+          include: 'Account'
+        });
+      }
     }
     User.init({
       email: {

@@ -10,7 +10,9 @@
     <h1><%= data.title %></h1>
     <p>Post ID : <%= data.id %></p>
     <p>Code : <%= data.code %></p>
-    <img src="<%= data.imageUrl %>" alt="" style="height: 100px;">
+    <% if (data.imageUrl) { %>
+        <img src="<%= data.imageUrl %>" alt="" style="height: 100px;">
+    <% } %>
     <p><%- data.formattedContent %></p>
 
     Tags: 

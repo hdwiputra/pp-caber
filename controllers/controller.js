@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const { Account, User, Upload, UploadsTag, Tag } = require('../models');
 const { QueryInterface } = require('sequelize');
 const dateFormat = require('../helpers/helper');
+const { Op } = require('sequelize');
 
 class Controller {
     static async landing(req, res) {
@@ -13,34 +14,73 @@ class Controller {
     }
     static async home(req, res) {
         try {
-            let member = await Account.findAll();
-            let uploads = await Upload.findAll({
-                include: {
-                    model: Account,
-                    attributes: [
-                        'username'
-                    ]
-                },
-                order: [['createdAt', 'DESC']]
+            let { tittle, search } = req.query;
+            let member = await Account.findAll({
+                include: [{
+                    model: User,
+                    where: {
+                        role: {
+                            [Op.ne]: 'Admin'
+                        }
+                    }
+                }]
             });
-            res.render('home', { member, uploads, dateFormat });
+            let admins = await User.findAdmins();
+
+            let query = {
+                include: [{
+                    model: Account,
+                    attributes: ['username'],
+                },
+                {
+                    model: Tag,
+                }
+                ],
+                order: [['createdAt', 'DESC']],
+            };
+
+            if (search) {
+                query.where = {
+                    title: {
+                        [Op.iLike]: `%${search}%`
+                    }
+                };
+            }
+
+            let uploads = await Upload.findAll(query);
+
+            res.render('home', { member, uploads, admins, tittle, dateFormat });
         } catch (error) {
             res.send(error);
         }
     }
     static async getAddUpload(req, res) {
         try {
+            let { error } = req.query;
             let data = await Tag.findAll();
-            res.render('addUpload', { data });
+            res.render('addUpload', { data, error });
         } catch (error) {
             res.send(error);
         }
     }
     static async postAddUpload(req, res) {
         try {
-            const { title, content, imageUrl, tags } = req.body
+            let { title, content, imageUrl, tags } = req.body
 
-            await Upload.create({
+            console.log(req.body);
+            console.log(tags);
+
+            if (imageUrl === '') {
+                imageUrl = null;
+            }
+
+            if (!tags) {
+                tags = [1]
+            } else if (!isNaN(tags)) {
+                tags = [tags];
+            }
+
+            let data = await Upload.create({
                 title,
                 content,
                 imageUrl,
@@ -49,19 +89,24 @@ class Controller {
 
             let uploadsTagsData = []
             tags.forEach(el => {
-                uploadsTagsData.push({ UploadId: req.session.userId, TagId: el })
+                uploadsTagsData.push({ UploadId: data.id, TagId: el })
             });
-
+            console.log(uploadsTagsData);
             await UploadsTag.bulkCreate(uploadsTagsData)
 
             res.redirect('/home');
         } catch (error) {
+            if (error.name === 'SequelizeValidationError') {
+                error = error.errors.map(el => el.message);
+                res.redirect(`/uploads/add?error=${error}`);
+            }
+            console.log(error)
             res.send(error);
         }
     }
     static async uploadId(req, res) {
         try {
-            const { id } = req.params
+            let { id } = req.params
             let data = await Upload.findOne({
                 where: { id: id },
                 include: {
@@ -75,7 +120,7 @@ class Controller {
     }
     static async getEditUpload(req, res) {
         try {
-            const { id } = req.params;
+            let { id } = req.params;
             let data = await Tag.findAll();
             let upload = await Upload.findOne({
                 where: { id: id },
@@ -90,8 +135,20 @@ class Controller {
     }
     static async postEditUpload(req, res) {
         try {
-            const { id } = req.params;
-            const { title, content, imageUrl, tags } = req.body;
+            let { id } = req.params;
+            let { title, content, imageUrl, tags } = req.body;
+
+            console.log(req.body)
+
+            if (imageUrl === '') {
+                imageUrl = null;
+            }
+
+            if (!tags) {
+                tags = [1]
+            } else if (!isNaN(tags)) {
+                tags = [tags];
+            }
 
             await Upload.update(
                 { title, content, imageUrl },
@@ -105,16 +162,24 @@ class Controller {
                 uploadsTagsData.push({ UploadId: id, TagId: el })
             });
 
+            console.log(uploadsTagsData);
             await UploadsTag.bulkCreate(uploadsTagsData)
 
             res.redirect(`/uploads/${id}`);
         } catch (error) {
+            console.log(error)
             res.send(error);
         }
     }
     static async getDeleteUpload(req, res) {
         try {
-            const { id } = req.params;
+            let { id } = req.params;
+
+            let data = await Upload.findOne({
+                where: {
+                    id: id
+                }
+            })
 
             await UploadsTag.destroy({
                 where: {
@@ -124,11 +189,11 @@ class Controller {
 
             await Upload.destroy({
                 where: {
-                    id : id
+                    id: id
                 }
             });
 
-            res.redirect('/home');
+            res.redirect(`/home?tittle=${data.title}`);
 
         } catch (error) {
             res.send(error);

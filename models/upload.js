@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     imageUrl: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       validate: {
         isUrl: {
           msg: 'Image URL should be in URL format'
@@ -50,12 +50,25 @@ module.exports = (sequelize, DataTypes) => {
     AccountId: {
       type: DataTypes.INTEGER
     },
-    code:{
+    code: {
       type: DataTypes.STRING
     }
   }, {
     sequelize,
     modelName: 'Upload',
   });
+
+  Upload.beforeCreate((upload) => {
+    if (!upload.code) {
+      let data = upload.title.split(' ');
+      data = data.map(el => {
+        return el[0].toLowerCase()
+      });
+      data = data.join('');
+      const timestamp = Date.now();
+      upload.code = `${data}${timestamp}`;
+    }
+  })
+
   return Upload;
 };

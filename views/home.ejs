@@ -6,27 +6,54 @@
     <title>Home</title>
 </head>
 <body>
-    <%= JSON.stringify(uploads) %>
+    <%= JSON.stringify(admins) %>
     <a href="/logout">Logout</a>
     <h1>CaBer</h1>
     <a href="/uploads/add">Upload Something!</a><br>
+    <% if (tittle) { %>
+     <p>Upload with the title <%= tittle %> had been deleted</p>
+    <% } %>
+
+    <form action="/home" method="get">
+        <input type="text" name="search">
+        <input type="submit" value="SEARH">
+    </form>
 
     <table border="1">
         <tr>
             <th>Posted By</th>
             <th>Title</th>
             <th>Posted at</th>
+            <th>Tags</th>
         </tr>
         <% uploads.forEach(el => { %>
          <tr>
             <td><%= el.Account.username %></td>
             <td><a href="/uploads/<%= el.id %>"><%= el.title %></a></td>
             <td><%= dateFormat(el.createdAt) %></td>
+            <td><% el.Tags.forEach(tag => { %>
+                <p><%= tag.tagName %></p>
+              <% }) %></td>
          </tr>
         <% }) %>
     </table>
     <br>
 
+    <h3>Admin</h3>
+    <table border="1">
+        <tr>
+            <th>Username</th>
+            <th>Profile Picture</th>
+        </tr>
+        <% admins.forEach(el => { %>
+         <tr>
+            <td><a href="/member/edit/<%= el.Account.id %>"><%= el.Account.username %></a></td>
+            <td><img src="<%= el.Account.imageUrl %>" alt="." style="height: 50px; aspect-ratio: 1; object-fit: cover;"></td>
+         </tr>
+        <% }) %>
+    </table>
+
+    <h3>Member</h3>
     <table border="1">
         <tr>
             <th>Username</th>

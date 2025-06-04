@@ -8,7 +8,14 @@
 </head>
 
 <body>
-    <%= JSON.stringify(data) %>
+    <%= JSON.stringify(error) %>
+    <% if (error) { %>
+     <% error = error.split(',') %>
+     <% error.forEach(el => { %>
+      <p style="color: red;"><%= el %></p>
+     <% }) %>
+    <% } %>
+
         <h1>New Upload!</h1>
 
         <form action="/uploads/add" method="post">
