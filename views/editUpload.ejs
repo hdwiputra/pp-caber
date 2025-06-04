@@ -11,6 +11,13 @@
     <%= JSON.stringify(upload) %>
         <h1>Edit Upload!</h1>
 
+        <% if (error) { %>
+            <% error = error.split(',') %>
+            <% error.forEach(el => { %>
+             <p style="color: red;"><%= el %></p>
+            <% }) %>
+           <% } %>
+
         <form action="/uploads/<%= upload.id %>/edit/" method="post" enctype="multipart/form-data">
             <label>Title</label><br>
             <input type="text" name="title" value="<%= upload.title %>"><br><br>

@@ -115,6 +115,7 @@ class Controller {
     static async getEditUpload(req, res) {
         try {
             let { id } = req.params;
+            let { error } = req.query
             let data = await Tag.findAll();
             let upload = await Upload.findOne({
                 where: { id: id },
@@ -122,7 +123,7 @@ class Controller {
                     model: Tag
                 }
             });
-            res.render('editUpload', { data, upload });
+            res.render('editUpload', { data, upload, error });
         } catch (error) {
             res.send(error);
         }
@@ -132,8 +133,6 @@ class Controller {
             let { id } = req.params;
             let { title, content, tags } = req.body;
             let file = req.file;
-
-            console.log(req.body)
 
             if (!tags) {
                 tags = [1]
@@ -162,6 +161,11 @@ class Controller {
 
             res.redirect(`/uploads/${id}`);
         } catch (error) {
+            let { id } = req.params;
+            if (error.name === 'SequelizeValidationError') {
+                error = error.errors.map(el => el.message);
+                res.redirect(`/uploads/${id}/edit/?error=${error}`);
+            }
             console.log(error)
             res.send(error);
         }

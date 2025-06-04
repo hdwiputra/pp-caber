@@ -29,32 +29,38 @@ const idCheck = (req, res, next) => {
     next();
 };
 
-const checkAdmin = (req, res, next) => {
-    console.log(req.session.userId, req.session.role);
+const checkMemberEdit = (req, res, next) => {
+  console.log(req.session);
+  if(req.session.role ==='Admin'){
+    return next();
+  }
 
-    if (req.session.role !== 'Admin') {
-        const error = 'Please Login First!';
-        return res.redirect(`/login?error=${error}`);
-    }
+  if (req.session.userId != req.params.id) {
+      const error = 'Please Login First!';
+      return res.redirect(`/login?error=${error}`);
+  }
 
-    next();
+  next();
 };
 
-const canDeletePost = async (req, res, next) => {
-    const userId = req.session.userId;
-    const userRole = req.session.role;
-    const uploadId = req.params.id;
-  
-    try {
-      const upload = await Upload.findByPk(uploadId);
-  
-      if (userRole === 'Admin' || upload.AccountId === userId) {
-        next(); // boleh lanjut delete
-      }
-    } catch (error) {
-      next(error);
+const canDeleteUpload = async (req, res, next) => {
+  const userId = req.session.userId;
+  const userRole = req.session.role;
+  const uploadId = req.params.id;
+
+  try {
+    const upload = await Upload.findByPk(uploadId);
+
+    if (userRole === 'Admin' || upload.AccountId === userId) {
+      return next();
+    } else {
+      const error = 'Please Login First!';
+      return res.redirect(`/login?error=${encodeURIComponent(error)}`);
     }
-  };
+  } catch (error) {
+    return next(error);
+  }
+};
 
 router.get('/', Controller.landing);
 router.get('/register', UserController.getRegister);
@@ -66,14 +72,14 @@ router.use(idCheck);
 
 router.get('/logout', UserController.getLogOut)
 router.get('/home', Controller.home);
-router.get('/member/edit/:id', UserController.getEditMember);
+router.get('/member/edit/:id', checkMemberEdit, UserController.getEditMember);
 router.post('/member/edit/:id', upload.single('imageUrl'), UserController.postEditMember);
 
 router.get('/uploads/add', Controller.getAddUpload);
 router.post('/uploads/add', upload.single('imageUrl'), Controller.postAddUpload);
 router.get('/uploads/:id', Controller.uploadId);
-router.get('/uploads/:id/edit', Controller.getEditUpload);
+router.get('/uploads/:id/edit', canDeleteUpload, Controller.getEditUpload);
 router.post('/uploads/:id/edit', upload.single('imageUrl'), Controller.postEditUpload);
-router.get('/uploads/:id/delete', canDeletePost, Controller.getDeleteUpload);
+router.get('/uploads/:id/delete', canDeleteUpload, Controller.getDeleteUpload);
 
 module.exports = router;

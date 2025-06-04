@@ -6,8 +6,14 @@
     <title>Edit Member</title>
 </head>
 <body>
-    <%= JSON.stringify(data) %>
     <h1>Edit Member</h1>
+
+    <% if (error) { %>
+        <% error = error.split(',') %>
+        <% error.forEach(el => { %>
+         <p style="color: red;"><%= el %></p>
+        <% }) %>
+       <% } %>
 
     <form method="post" action="/member/edit/<%= data.id %>" enctype="multipart/form-data">
         <label>Username</label><br>

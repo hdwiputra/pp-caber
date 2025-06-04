@@ -22,7 +22,7 @@ class UserController {
 
             const account = Account.build({
                 username,
-                imageUrl: 'https://i.pinimg.com/474x/47/ba/71/47ba71f457434319819ac4a7cbd9988e.jpg'
+                imageUrl: 'placeholder.jpg'
             });
 
             let errors = [];
@@ -122,12 +122,13 @@ class UserController {
     static async getEditMember(req, res) {
         try {
             const { id } = req.params;
+            const { error } = req.query;
             let data = await Account.findOne({
                 where: {
                     id: id
                 }
             })
-            res.render('editMember', { data });
+            res.render('editMember', { data, error });
         } catch (error) {
             res.send(error);
         }
@@ -149,6 +150,11 @@ class UserController {
 
             res.redirect('/home');
         } catch (error) {
+            let {id} = req.params;
+            if (error.name === 'SequelizeValidationError') {
+                error = error.errors.map(el => el.message);
+                res.redirect(`/member/edit/${id}?error=${error}`);
+            }
             console.log(error)
             res.send(error);
         }
