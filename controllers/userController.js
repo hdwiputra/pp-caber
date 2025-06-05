@@ -29,21 +29,24 @@ class UserController {
 
             try {
                 await user.validate();
-            } catch (err) {
-                errors.push(...err.errors.map(e => e.message));
+            } catch (error) {
+                error.errors.forEach(el => {
+                    errors.push(el.message);
+                });
             }
-
+            
             try {
                 await account.validate();
-            } catch (err) {
-                errors.push(...err.errors.map(e => e.message));
+            } catch (error) {
+                error.errors.forEach(el => {
+                    errors.push(el.message);
+                });
             }
-
+            
             if (errors.length > 0) {
-                return res.redirect(`/register?error=${(errors.join(','))}`);
+                return res.redirect(`/register?error=${errors.join(',')}`);
             }
 
-            // Kalau validasi oke, baru simpan dengan transaction supaya konsisten
             await User.sequelize.transaction(async (t) => {
                 let savedUser = await user.save({ transaction: t });
                 account.UserId = savedUser.id;
@@ -97,7 +100,6 @@ class UserController {
                 return res.redirect(`/login?error=${(error)}`);
             }
 
-            // Sukses login, simpan session
             req.session.userId = data.id;
             req.session.role = data.role;
 

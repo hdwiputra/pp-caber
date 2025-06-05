@@ -3,9 +3,8 @@ const multer = require('multer');
 const path = require('path');
 const Controller = require('../controllers/controller');
 const UserController = require('../controllers/userController');
-const app = express();
 const router = express.Router();
-const { Account, User, Upload, UploadsTag, Tag } = require('../models');
+const { Upload } = require('../models');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
