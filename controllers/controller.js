@@ -78,7 +78,7 @@ class Controller {
                 title,
                 content,
                 imageUrl: file ? file.filename : undefined,
-                AccountId: req.session.userId
+                AccountId: req.session.accountId
             })
 
             let uploadsTagsData = []
