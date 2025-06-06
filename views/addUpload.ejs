@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Upload - CaBer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #333;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .error-section {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .error-title {
+            color: #d32f2f;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-display:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-input-display.has-file {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .tags-section {
+            margin-bottom: 25px;
+        }
+
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .tag-item {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tag-item:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .tag-item.selected {
+            border-color: #667eea;
+            background: linear-gradient(45deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .tag-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .tag-label {
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .no-tags {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .back-btn {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .tags-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-help {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .required {
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="/home" class="back-btn">← Back to Home</a>
+
+        <!-- Header -->
+        <div class="header">
+            <h1 class="page-title">📝 New Upload</h1>
+            <p class="page-subtitle">Share your content with the community</p>
+        </div>
+
+        <!-- Error Messages -->
+        <% if (error) { %>
+            <div class="error-section">
+                <div class="error-title">
+                    <span>⚠️</span>
+                    <span>Please fix the following errors:</span>
+                </div>
+                <% error.split(',').forEach(el => { %>
+                    <div class="error-message">
+                        <span>❌</span>
+                        <span><%= el.trim() %></span>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <!-- Form -->
+        <div class="form-container">
+            <form action="/uploads/add" method="post" enctype="multipart/form-data">
+                <!-- Title Field -->
+                <div class="form-group">
+                    <label for="title" class="form-label">
+                        📄 Title <span class="required">*</span>
+                    </label>
+                    <input type="text" id="title" name="title" class="form-input" 
+                           placeholder="Enter a catchy title for your upload...">
+                </div>
+
+                <!-- Content Field -->
+                <div class="form-group">
+                    <label for="content" class="form-label">
+                        📝 Content <span class="required">*</span>
+                    </label>
+                    <textarea id="content" name="content" class="form-input form-textarea" 
+                              placeholder="Write your content here...!"></textarea>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group">
+                    <label class="form-label">
+                        🖼️ Image (Optional)
+                    </label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="imageUrl" name="imageUrl" class="file-input" accept="image/*">
+                        <div class="file-input-display" id="fileDisplay">
+                            <span>📁</span>
+                            <span>Click to select an image to</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags Section -->
+                <div class="tags-section">
+                    <label class="form-label">
+                        🏷️ Tags (Optional)
+                    </label>
+                    <div class="form-help" style="margin-bottom: 15px;">
+                        Select relevant tags to help others find your content! General will be checked if you leave it Empty!
+                    </div>
+                    
+                    <% if (data && data.length > 0) { %>
+                        <div class="tags-grid">
+                            <% data.forEach(el => { %>
+                                <div class="tag-item" onclick="toggleTag(this)">
+                                    <input type="checkbox" name="tags" value="<%= el.id %>" 
+                                           id="tag-<%= el.id %>" class="tag-checkbox">
+                                    <label for="tag-<%= el.id %>" class="tag-label">
+                                        <%= el.tagName %>
+                                    </label>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="no-tags">
+                            🏷️ No tags available at the moment
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">
+                        <span>🚀</span>
+                        <span>Create Upload</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // File input handling
+        const fileInput = document.getElementById('imageUrl');
+        const fileDisplay = document.getElementById('fileDisplay');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                fileDisplay.innerHTML = `
+                    <span>✅</span>
+                    <span>Selected: ${fileName}</span>
+                `;
+                fileDisplay.classList.add('has-file');
+            } else {
+                fileDisplay.innerHTML = `
+                    <span>📁</span>
+                    <span>Click to select an image or drag and drop</span>
+                `;
+                fileDisplay.classList.remove('has-file');
+            }
+        });
+
+        // Tag selection handling
+        function toggleTag(tagItem) {
+            const checkbox = tagItem.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                tagItem.classList.add('selected');
+            } else {
+                tagItem.classList.remove('selected');
+            }
+        }
+
+        // Prevent form submission on Enter in title field (optional UX improvement)
+        document.getElementById('title').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('content').focus();
+            }
+        });
+    </script>
+</body>
+</html>

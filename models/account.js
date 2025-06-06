@@ -12,12 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Account.belongsTo(models.User, { foreignKey: 'UserId' })
+      Account.hasMany(models.Upload, { foreignKey: 'AccountId' })
     }
   }
   Account.init({
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         notNull: {
           msg: 'Username cannot be left empty!'

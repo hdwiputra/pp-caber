@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Member - CaBer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #333;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .error-section {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .error-title {
+            color: #d32f2f;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-display:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-input-display.has-file {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .current-image {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .current-image img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+        }
+
+        .current-image-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .cancel-btn {
+            background: rgba(108, 117, 125, 0.8);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(108, 117, 125, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.3);
+        }
+
+        .form-help {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .required {
+            color: #d32f2f;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .back-btn {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .submit-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .submit-btn, .cancel-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <a href="/home" class="back-btn">← Back to Home</a>
+
+        <!-- Header -->
+        <div class="header">
+            <h1 class="page-title">✏️ Edit Member</h1>
+            <p class="page-subtitle">Update member information</p>
+        </div>
+
+        <!-- Error Messages -->
+        <% if (error) { %>
+            <div class="error-section">
+                <div class="error-title">
+                    <span>⚠️</span>
+                    <span>Please fix the following errors:</span>
+                </div>
+                <% error.split(',').forEach(el => { %>
+                    <div class="error-message">
+                        <span>❌</span>
+                        <span><%= el.trim() %></span>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+
+        <!-- Form -->
+        <div class="form-container">
+            <form method="post" action="/member/edit/<%= data.id %>" enctype="multipart/form-data">
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        👤 Username <span class="required">*</span>
+                    </label>
+                    <input type="text" id="username" name="username" class="form-input" 
+                           value="<%= data.username %>" placeholder="Enter username...">
+                    <div class="form-help">Choose a unique username that represents you</div>
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group">
+                    <label class="form-label">
+                        🖼️ Profile Image
+                    </label>
+                    
+                    <!-- Show current image if exists -->
+                    <% if (data.imageUrl) { %>
+                        <div class="current-image">
+                            <span class="current-image-label">Current Image:</span>
+                            <img src="/uploads/<%= data.imageUrl %>" alt="Current profile image">
+                        </div>
+                    <% } %>
+                    
+                    <div class="file-input-wrapper">
+                        <input type="file" id="imageUrl" name="imageUrl" class="file-input" accept="image/*">
+                        <div class="file-input-display" id="fileDisplay">
+                            <span>📁</span>
+                            <span>Click to select a new image or drag and drop</span>
+                        </div>
+                    </div>
+                    <div class="form-help">Upload a new image to replace the current one (optional)</div>
+                </div>
+
+                <!-- Submit Section -->
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">
+                        <span>💾</span>
+                        <span>Update Member</span>
+                    </button>
+                    <a href="/home" class="cancel-btn">
+                        <span>❌</span>
+                        <span>Cancel</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // File input handling
+        const fileInput = document.getElementById('imageUrl');
+        const fileDisplay = document.getElementById('fileDisplay');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                fileDisplay.innerHTML = `
+                    <span>✅</span>
+                    <span>Selected: ${fileName}</span>
+                `;
+                fileDisplay.classList.add('has-file');
+            } else {
+                fileDisplay.innerHTML = `
+                    <span>📁</span>
+                    <span>Click to select a new image or drag and drop</span>
+                `;
+                fileDisplay.classList.remove('has-file');
+            }
+        });
+
+        // Auto-focus username field
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) {
+                usernameInput.focus();
+                // Move cursor to end of text
+                usernameInput.setSelectionRange(usernameInput.value.length, usernameInput.value.length);
+            }
+        });
+    </script>
+</body>
+</html>

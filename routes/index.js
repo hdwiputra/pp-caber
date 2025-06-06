@@ -1,29 +1,64 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 const Controller = require('../controllers/controller');
 const UserController = require('../controllers/userController');
-const app = express();
 const router = express.Router();
+const { Upload } = require('../models');
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 const idCheck = (req, res, next) => {
-    console.log(req.session.userId, req.session.role);
-    
+    console.log(req.session);
+
     if (!req.session.userId) {
         const error = 'Please Login First!';
-        return res.redirect(`./login?error=${error}`);
+        return res.redirect(`/login?error=${error}`);
     }
 
     next();
 };
 
-const roleCheck = (req, res, next) => {
-    console.log(req.session.userId, req.session.role);
-    
-    if (!req.session.role) {
-        const error = 'Please Login First!';
-        return res.redirect(`./login?error=${error}`);
-    }
+const checkMemberEdit = (req, res, next) => {
+  console.log(req.session);
+  if(req.session.role ==='Admin'){
+    return next();
+  }
 
-    next();
+  if (req.session.accountId != req.params.id) {
+      const error = 'Please Login First!';
+      return res.redirect(`/login?error=${error}`);
+  }
+
+  next();
+};
+
+const canDeleteUpload = async (req, res, next) => {
+  const userId = req.session.userId;
+  const userRole = req.session.role;
+  const uploadId = req.params.id;
+
+  try {
+    const upload = await Upload.findByPk(uploadId);
+
+    if (userRole === 'Admin' || upload.AccountId === userId) {
+      return next();
+    } else {
+      const error = 'Please Login First!';
+      return res.redirect(`/login?error=${encodeURIComponent(error)}`);
+    }
+  } catch (error) {
+    return next(error);
+  }
 };
 
 router.get('/', Controller.landing);
@@ -36,5 +71,14 @@ router.use(idCheck);
 
 router.get('/logout', UserController.getLogOut)
 router.get('/home', Controller.home);
+router.get('/member/edit/:id', checkMemberEdit, UserController.getEditMember);
+router.post('/member/edit/:id', upload.single('imageUrl'), UserController.postEditMember);
+
+router.get('/uploads/add', Controller.getAddUpload);
+router.post('/uploads/add', upload.single('imageUrl'), Controller.postAddUpload);
+router.get('/uploads/:id', Controller.uploadId);
+router.get('/uploads/:id/edit', canDeleteUpload, Controller.getEditUpload);
+router.post('/uploads/:id/edit', upload.single('imageUrl'), Controller.postEditUpload);
+router.get('/uploads/:id/delete', canDeleteUpload, Controller.getDeleteUpload);
 
 module.exports = router;
