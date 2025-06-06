@@ -34,7 +34,7 @@ const checkMemberEdit = (req, res, next) => {
     return next();
   }
 
-  if (req.session.userId != req.params.id) {
+  if (req.session.accountId != req.params.id) {
       const error = 'Please Login First!';
       return res.redirect(`/login?error=${error}`);
   }

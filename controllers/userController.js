@@ -84,7 +84,6 @@ class UserController {
                 include: {
                     model: Account,
                     where: { username },
-                    attributes: ['username']
                 },
                 attributes: ['id', 'password', 'role']
             });
@@ -101,6 +100,7 @@ class UserController {
             }
 
             req.session.userId = data.id;
+            req.session.accountId = data.Account.id;
             req.session.role = data.role;
 
             return res.redirect('/home');
